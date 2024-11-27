@@ -7,17 +7,15 @@ API_SECRET = 'D2SO47457b9RdC0ukgDRNxEygSJhxmIA652U1m3g4cbU1uK3ljEKcouz9WowEaRO'
 client = Client(API_KEY, API_SECRET)
 
 def obtener_precio(par):
+    
     precio = client.get_symbol_ticker(symbol=par)
     print(f"El precio actual de {par} es: {precio['price']}")
     return float(precio['price'])
 
-obtener_precio('BTCUSDT')
-obtener_precio('ETHUSDT')
-obtener_precio('SOLUSDT')
+precio_compra = 96100
+precio_venta = 96150 
+cantidad = '([0-9]{1,20})'
 
-precio_compra = 96000
-precio_venta = 96650 
-cantidad = 0.00001 
 
 def estrategia_trading():
     while True:
@@ -41,6 +39,6 @@ def estrategia_trading():
 
         time.sleep(2)
 
-
+ 
 estrategia_trading()
 
