@@ -16,7 +16,6 @@ precio_compra = 96100
 precio_venta = 96150 
 cantidad = '([0-9]{1,20})'
 
-
 def estrategia_trading():
     while True:
         precio_actual = obtener_precio('BTCUSDT')
@@ -39,6 +38,4 @@ def estrategia_trading():
 
         time.sleep(2)
 
- 
 estrategia_trading()
-
