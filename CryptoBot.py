@@ -3,115 +3,141 @@ from binance.client import Client
 from binance.exceptions import BinanceAPIException
 import logging
 
-# Configuración de claves API
+# -----------------------------
+# CONFIGURACIÓN DE LA API
+# -----------------------------
 API_KEY = 'rEpH0ZRmNpD37JnTaqeAXDsvmBDkYFGxGBiycmbT7ftkjmmFvkltsyfoniXLAqe2'
 API_SECRET = 'D2SO47457b9RdC0ukgDRNxEygSJhxmIA652U1m3g4cbU1uK3ljEKcouz9WowEaRO'
 
-# Inicializar cliente de Binance
 client = Client(API_KEY, API_SECRET)
 
-# Configuración de la estrategia
-precio_compra = 96100  # Precio objetivo para comprar
-precio_venta = 96150   # Precio objetivo para vender
-cantidad = 0.001       # Cantidad de BTC a comprar/vender
+# -----------------------------
+# CONFIGURACIÓN DE LA ESTRATEGIA
+# -----------------------------
+# Umbrales para disparar la operación
+precio_compra = 104000  # Si el precio actual es menor a este, se ejecuta una compra
+precio_venta  = 105000  # Si el precio actual es mayor a este, se ejecuta una venta
+cantidad      = 0.0001   # Cantidad de BTC a comprar/vender
 
-# Configurar logging para registrar errores y operaciones
+# -----------------------------
+# CONFIGURACIÓN DE LOGGING
+# -----------------------------
 logging.basicConfig(
-    filename="trading_bot_real.log",
+    filename="trading_bot.log",
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s"
 )
 
-# Función para obtener el precio actual del par
-def obtener_precio(par):
+# -----------------------------
+# FUNCIONES AUXILIARES
+# -----------------------------
+def obtener_precio(par: str) -> float:
+    """
+    Obtiene el precio actual del símbolo especificado.
+    """
     try:
-        precio = client.get_symbol_ticker(symbol=par)
-        print(f"El precio actual de {par} es: {precio['price']}")
-        return float(precio['price'])
+        precio_info = client.get_symbol_ticker(symbol=par)
+        precio = float(precio_info['price'])
+        print(f"Precio actual de {par}: {precio}")
+        return precio
     except BinanceAPIException as e:
         print(f"Error al obtener el precio: {e}")
         logging.error(f"Error al obtener el precio: {e}")
         return None
 
-# Función para verificar el saldo disponible
-def verificar_saldo(symbol, cantidad):
+def obtener_balance(asset: str) -> float:
+    """
+    Consulta el balance disponible para el activo especificado.
+    """
     try:
-        balances = client.get_account()
-        for balance in balances['balances']:
-            if balance['asset'] == symbol:
-                disponible = float(balance['free'])
-                print(f"Saldo disponible de {symbol}: {disponible}")
-                return disponible >= cantidad
-        return False
+        balance_info = client.get_asset_balance(asset=asset)
+        balance = float(balance_info['free'])
+        return balance
     except BinanceAPIException as e:
-        print(f"Error al verificar el saldo: {e}")
-        logging.error(f"Error al verificar el saldo: {e}")
-        return False
+        print(f"Error al obtener balance de {asset}: {e}")
+        logging.error(f"Error al obtener balance de {asset}: {e}")
+        return 0.0
 
-# Función para realizar una compra real
-def ejecutar_compra(symbol, cantidad):
-    try:
-        orden = client.order_market_buy(
-            symbol=symbol,
-            quantity=cantidad
-        )
-        print(f"Compra ejecutada: {orden}")
-        logging.info(f"Compra ejecutada: {orden}")
-    except BinanceAPIException as e:
-        if "insufficient balance" in str(e):
-            print("Error: No tienes suficiente saldo para realizar la compra.")
-            logging.error("Error: Saldo insuficiente para la compra.")
-        else:
-            print(f"Error al realizar la compra: {e}")
-            logging.error(f"Error al realizar la compra: {e}")
+# -----------------------------
+# FUNCIONES PARA OPERAR REALMENTE
+# -----------------------------
+def realizar_compra(precio_actual: float):
+    """
+    Ejecuta una orden de compra de mercado para BTC.
+    Antes de la compra se consulta el balance USDT.
+    """
+    usdt_balance = obtener_balance('USDT')
+    costo_total = precio_actual * cantidad
+    if usdt_balance >= costo_total:
+        try:
+            order = client.create_order(
+                symbol='BTCUSDT',
+                side=SIDE_BUY,
+                type=ORDER_TYPE_MARKET,
+                quantity=cantidad
+            )
+            print(f"COMPRA EJECUTADA: {order}")
+            logging.info(f"Compra ejecutada: {order}")
+        except BinanceAPIException as e:
+            print(f"Error al ejecutar la compra: {e}")
+            logging.error(f"Error al ejecutar la compra: {e}")
+    else:
+        mensaje = (f"Saldo insuficiente para comprar. Saldo USDT: {usdt_balance:.2f}, "
+                   f"se requiere: {costo_total:.2f}")
+        print(mensaje)
+        logging.info(mensaje)
 
-# Función para realizar una venta real
-def ejecutar_venta(symbol, cantidad):
-    try:
-        orden = client.order_market_sell(
-            symbol=symbol,
-            quantity=cantidad
-        )
-        print(f"Venta ejecutada: {orden}")
-        logging.info(f"Venta ejecutada: {orden}")
-    except BinanceAPIException as e:
-        if "insufficient balance" in str(e):
-            print("Error: No tienes suficiente saldo para realizar la venta.")
-            logging.error("Error: Saldo insuficiente para la venta.")
-        else:
-            print(f"Error al realizar la venta: {e}")
-            logging.error(f"Error al realizar la venta: {e}")
+def realizar_venta(precio_actual: float):
+    """
+    Ejecuta una orden de venta de mercado para BTC.
+    Antes de la venta se consulta el balance BTC.
+    """
+    btc_balance = obtener_balance('BTC')
+    if btc_balance >= cantidad:
+        try:
+            order = client.create_order(
+                symbol='BTCUSDT',
+                side=SIDE_SELL,
+                type=ORDER_TYPE_MARKET,
+                quantity=cantidad
+            )
+            print(f"VENTA EJECUTADA: {order}")
+            logging.info(f"Venta ejecutada: {order}")
+        except BinanceAPIException as e:
+            print(f"Error al ejecutar la venta: {e}")
+            logging.error(f"Error al ejecutar la venta: {e}")
+    else:
+        mensaje = (f"Saldo insuficiente para vender. Saldo BTC: {btc_balance:.6f}, "
+                   f"se requiere: {cantidad:.6f}")
+        print(mensaje)
+        logging.info(mensaje)
 
-# Estrategia de trading
-def estrategia_trading():
+# -----------------------------
+# ESTRATEGIA DE TRADING REAL
+# -----------------------------
+def estrategia_trading_real():
+    """
+    Función principal que consulta el precio de BTCUSDT cada 5 segundos y
+    ejecuta una orden de compra si el precio es menor a 'precio_compra'
+    o una orden de venta si el precio es mayor a 'precio_venta'.
+    """
     while True:
         try:
-            # Obtener precio actual
             precio_actual = obtener_precio('BTCUSDT')
-
             if precio_actual is None:
                 time.sleep(10)
                 continue
 
-            # Verificar y ejecutar compra
             if precio_actual < precio_compra:
-                print("Verificando saldo para comprar...")
-                if verificar_saldo('USDT', cantidad * precio_actual):
-                    print("Ejecutando orden de compra...")
-                    ejecutar_compra('BTCUSDT', cantidad)
-                else:
-                    print("Saldo insuficiente para la compra.")
-
-            # Verificar y ejecutar venta
+                print("Condición de compra cumplida. Ejecutando compra...")
+                realizar_compra(precio_actual)
             elif precio_actual > precio_venta:
-                print("Verificando saldo para vender...")
-                if verificar_saldo('BTC', cantidad):
-                    print("Ejecutando orden de venta...")
-                    ejecutar_venta('BTCUSDT', cantidad)
-                else:
-                    print("Saldo insuficiente para la venta.")
+                print("Condición de venta cumplida. Ejecutando venta...")
+                realizar_venta(precio_actual)
+            else:
+                print(f"El precio actual de BTC es {precio_actual:.2f}, sin condiciones para operar.")
 
-            # Pausa entre consultas para evitar límites de la API
+            # Pausa para no exceder límites de la API
             time.sleep(5)
 
         except Exception as e:
@@ -119,5 +145,8 @@ def estrategia_trading():
             logging.error(f"Error inesperado: {e}")
             time.sleep(10)
 
-# Ejecutar el bot
-estrategia_trading()
+# -----------------------------
+# EJECUCIÓN DEL BOT
+# -----------------------------
+if __name__ == "__main__":
+    estrategia_trading_real()

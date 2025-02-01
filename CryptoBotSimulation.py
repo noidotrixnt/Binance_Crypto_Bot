@@ -11,8 +11,8 @@ API_SECRET = 'D2SO47457b9RdC0ukgDRNxEygSJhxmIA652U1m3g4cbU1uK3ljEKcouz9WowEaRO'
 client = Client(API_KEY, API_SECRET)
 
 # Configuración de la estrategia
-precio_compra = 104990  # Precio objetivo para comprar
-precio_venta = 10500   # Precio objetivo para vender
+precio_compra = 100000  # Precio objetivo para comprar
+precio_venta = 105000   # Precio objetivo para vender
 cantidad = 0.001       # Cantidad de BTC a comprar/vender
 
 # Saldos ficticios para la simulación
