@@ -1,6 +1,7 @@
 import time
 from binance.client import Client
 from binance.exceptions import BinanceAPIException
+from binance.enums import SIDE_BUY, SIDE_SELL, ORDER_TYPE_MARKET
 import logging
 
 # -----------------------------
@@ -15,9 +16,9 @@ client = Client(API_KEY, API_SECRET)
 # CONFIGURACIÓN DE LA ESTRATEGIA
 # -----------------------------
 # Umbrales para disparar la operación
-precio_compra = 102500  # Si el precio actual es menor a este, se ejecuta una compra
-precio_venta  = 104000  # Si el precio actual es mayor a este, se ejecuta una venta
-cantidad      = 0.001   # Cantidad de BTC a comprar/vender
+precio_compra = 92000  # Si el precio actual es menor a este, se ejecuta una compra
+precio_venta  = 107000  # Si el precio actual es mayor a este, se ejecuta una venta
+cantidad      = 0.0001   # Cantidad de BTC a comprar/vender
 
 # -----------------------------
 # CONFIGURACIÓN DE LOGGING

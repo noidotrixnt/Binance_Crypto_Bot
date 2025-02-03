@@ -12,11 +12,8 @@ from binance.exceptions import BinanceAPIException
 load_dotenv()
 
 # Obtener las API keys desde las variables de entorno
-API_KEY = os.getenv("BINANCE_API_KEY")
-API_SECRET = os.getenv("BINANCE_API_SECRET")
-
-if not API_KEY or not API_SECRET:
-    raise ValueError("Faltan las API keys. Verifica que BINANCE_API_KEY y BINANCE_API_SECRET estén definidas en el archivo .env.")
+API_KEY = 'rEpH0ZRmNpD37JnTaqeAXDsvmBDkYFGxGBiycmbT7ftkjmmFvkltsyfoniXLAqe2'
+API_SECRET = 'D2SO47457b9RdC0ukgDRNxEygSJhxmIA652U1m3g4cbU1uK3ljEKcouz9WowEaRO'
 
 client = Client(API_KEY, API_SECRET)
 
