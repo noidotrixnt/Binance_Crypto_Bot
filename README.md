@@ -6,7 +6,7 @@ Use this software at your own risk. The developers are not responsible for finan
 
 # 🚀 Advanced Binance Trading Bot
 
-A fully automated **crypto trading bot** that uses **Simple Moving Averages (SMA)** and **Relative Strength Index (RSI)** to execute buy and sell orders on Binance. It also features **Trailing Stop Loss** to maximize profits and minimize losses.
+A fully automated **Open Source Crypto Trading Bot** that uses **Simple Moving Averages (SMA)** and **Relative Strength Index (RSI)** to execute buy and sell orders on Binance. It also features **Trailing Stop Loss** to maximize profits and minimize losses.
 
 ## 📌 Features
 ✅ Uses **SMA (7, 21)** and **RSI (14)** for trade signals.  
