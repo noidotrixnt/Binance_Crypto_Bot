@@ -90,17 +90,6 @@ The bot will:
 
 ---
 
-## 🎯 Upcoming Features & Improvements
-✅ **Integration of AI using GPT API** for enhanced market analysis and trade predictions.  
-✅ **Graphical User Interface (GUI)** to monitor trading activity in real time.  
-✅ **Enhanced security** with API key encryption and authentication layers.  
-✅ **Improved data analysis** using machine learning and advanced statistical models.  
-✅ **Multi-exchange support** to expand beyond Binance.  
-✅ **Backtesting and simulation** to refine strategies before live trading.  
-✅ **User notifications** via email, Telegram, or WhatsApp for trade alerts.  
-
----
-
 ## ⚠️ Disclaimer  
 
 **This trading bot is provided as-is, without warranty of any kind.**  
@@ -110,4 +99,3 @@ This bot uses **Binance's API** but is **not affiliated with, endorsed, or certi
 **By using this bot, you agree that the developers are not responsible for any losses or malfunctions.**  
 
 🚀 **Happy Trading!**
-
