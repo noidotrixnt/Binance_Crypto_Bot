@@ -3,22 +3,21 @@ from binance.client import Client
 from binance.exceptions import BinanceAPIException
 from binance.enums import SIDE_BUY, SIDE_SELL, ORDER_TYPE_MARKET
 import logging
+import config
 
 # -----------------------------
 # CONFIGURACIÓN DE LA API
 # -----------------------------
-API_KEY = 'rEpH0ZRmNpD37JnTaqeAXDsvmBDkYFGxGBiycmbT7ftkjmmFvkltsyfoniXLAqe2'
-API_SECRET = 'D2SO47457b9RdC0ukgDRNxEygSJhxmIA652U1m3g4cbU1uK3ljEKcouz9WowEaRO'
 
-client = Client(API_KEY, API_SECRET)
+client = Client(config.API_KEY, config.API_SECRET)
 
 # -----------------------------
 # CONFIGURACIÓN DE LA ESTRATEGIA
 # -----------------------------
 # Umbrales para disparar la operación
-precio_compra = 92000  # Si el precio actual es menor a este, se ejecuta una compra
+precio_compra = 100000  # Si el precio actual es menor a este, se ejecuta una compra
 precio_venta  = 107000  # Si el precio actual es mayor a este, se ejecuta una venta
-cantidad      = 0.0001   # Cantidad de BTC a comprar/vender
+cantidad      = 1   # Cantidad de BTC a comprar/vender
 
 # -----------------------------
 # CONFIGURACIÓN DE LOGGING
@@ -93,7 +92,7 @@ def realizar_venta(precio_actual: float):
     Ejecuta una orden de venta de mercado para BTC.
     Antes de la venta se consulta el balance BTC.
     """
-    btc_balance = obtener_balance('BTC')
+    btc_balance = obtener_balance('BTC') # elegir aqui la criptomoneda a operar
     if btc_balance >= cantidad:
         try:
             order = client.create_order(

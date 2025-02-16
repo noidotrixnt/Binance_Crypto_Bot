@@ -3,6 +3,8 @@ import time
 import logging
 import pandas as pd
 import numpy as np
+import config
+
 from dotenv import load_dotenv  # Importa la librería para cargar variables de entorno
 from binance.client import Client
 from binance.enums import SIDE_BUY, SIDE_SELL, ORDER_TYPE_MARKET
@@ -11,11 +13,7 @@ from binance.exceptions import BinanceAPIException
 # Cargar las variables de entorno desde el archivo .env
 load_dotenv()
 
-# Obtener las API keys desde las variables de entorno
-API_KEY = 'rEpH0ZRmNpD37JnTaqeAXDsvmBDkYFGxGBiycmbT7ftkjmmFvkltsyfoniXLAqe2'
-API_SECRET = 'D2SO47457b9RdC0ukgDRNxEygSJhxmIA652U1m3g4cbU1uK3ljEKcouz9WowEaRO'
-
-client = Client(API_KEY, API_SECRET)
+client = Client(config.API_KEY, config.API_SECRET)
 
 # ------------------------------
 # Configuración de Logging

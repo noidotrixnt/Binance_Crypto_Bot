@@ -2,14 +2,10 @@ import time
 from binance.client import Client
 from binance.exceptions import BinanceAPIException
 import logging
-
-# Configuración de claves API
-API_KEY = 'rEpH0ZRmNpD37JnTaqeAXDsvmBDkYFGxGBiycmbT7ftkjmmFvkltsyfoniXLAqe2'
-API_SECRET = 'D2SO47457b9RdC0ukgDRNxEygSJhxmIA652U1m3g4cbU1uK3ljEKcouz9WowEaRO'
+import config
 
 # Inicializar cliente de Binance
-client = Client(API_KEY, API_SECRET)
-
+client = Client(config.API_KEY, config.API_SECRET)
 # Configuración de la estrategia
 precio_compra = 100000  # Precio objetivo para comprar
 precio_venta = 105000   # Precio objetivo para vender

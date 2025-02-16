@@ -1,10 +1,9 @@
 from binance.client import Client
 import time
+import config
 
-API_KEY = 'rEpH0ZRmNpD37JnTaqeAXDsvmBDkYFGxGBiycmbT7ftkjmmFvkltsyfoniXLAqe2'
-API_SECRET = 'D2SO47457b9RdC0ukgDRNxEygSJhxmIA652U1m3g4cbU1uK3ljEKcouz9WowEaRO'
 
-client = Client(API_KEY, API_SECRET)
+client = Client(config.API_KEY, config.API_SECRET)
 
 def obtener_precio(par):
     
